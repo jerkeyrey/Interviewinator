@@ -2,7 +2,7 @@
 
 import { initFirebaseAdmin } from "@/firebase/admin";
 
-const { db, auth } = initFirebaseAdmin(); 
+const { db, auth } = initFirebaseAdmin();
 import { cookies } from "next/headers";
 
 const ONE_WEEK = 60 * 60 * 24 * 7;
@@ -57,9 +57,8 @@ export async function signIn(params: SignInParams) {
         success: false,
         message: "User not found",
       };
-
-      await setSessionCookie(idToken);
     }
+    await setSessionCookie(idToken);
   } catch (e) {
     console.error("Error signing in", e);
   }
@@ -83,32 +82,34 @@ export async function setSessionCookie(idToken: string) {
 
 export async function getCurrentUser(): Promise<User | null> {
   const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get('session')?.value;
+  const sessionCookie = cookieStore.get("session")?.value;
 
-  if(!sessionCookie) return null;
+  if (!sessionCookie) return null;
 
-  try{
+  try {
     const decodedClaims = await auth.verifySessionCookie(sessionCookie, true);
 
-    const userRecord = await db.collection('users').doc(decodedClaims.uid).get();
+    const userRecord = await db
+      .collection("users")
+      .doc(decodedClaims.uid)
+      .get();
 
-    if(!userRecord.exists){
+    if (!userRecord.exists) {
       return null;
     }
 
     return {
       ...userRecord.data(),
-      id: userRecord.id
+      id: userRecord.id,
     } as User;
-  } catch(e){
+  } catch (e) {
     console.log(e);
 
     return null;
   }
-
 }
 
-export async function isAuthenticated(){
+export async function isAuthenticated() {
   const user = await getCurrentUser();
 
   return !!user;
