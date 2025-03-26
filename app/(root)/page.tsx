@@ -1,13 +1,12 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
-import { dummyInterviews } from "@/constants";
 import InterviewCard from "@/components/InterviewCard";
 import {
-  getCurrentUser,
   getInterviewsByUserId,
   getLatestInterviews,
-} from "@/lib/actions/auth.action";
+} from "@/lib/actions/general.actions";
+import { getCurrentUser } from "@/lib/actions/auth.action";
 
 export default async function Home() {
   const user = await getCurrentUser();
@@ -59,7 +58,7 @@ export default async function Home() {
         <h2>Take an Interview</h2>
 
         <div className="interviews-section">
-        {hasUpcomingInterviews ? (
+          {hasUpcomingInterviews ? (
             latestInterviews?.map((interview) => (
               <InterviewCard {...interview} key={interview.id} />
             ))
